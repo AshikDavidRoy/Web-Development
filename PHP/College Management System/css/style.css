@@ -92,8 +92,36 @@ body {
     width: 100%;
 }
 
-.main--container{}
+.main--container{
+    position: relative;
+    background: #ebe9e9;
+    width: 100%;
+    padding: 1rem;
+}
 
-.header--wapper{}
+.header--wapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 2rem;
+    margin-bottom: 1rem;
+}
 
-.header--title{}
+.header--wapper img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.header--title{
+    color: rgba(133, 99, 186, 255);
+}
+
+.user--info{
+    display: flex;
+    
+}
