@@ -19,3 +19,15 @@
 //   }
 //   return color;
 // }
+
+// function addClassToCSS(className) {
+//     const styleSheet = document.styleSheets[0]; // Assuming the first stylesheet
+//     const existingRule = Array.from(styleSheet.cssRules).find(rule => rule.selectorText === `.${className}`);
+
+//     if (!existingRule) {
+//         const rule = `.${className} { /* Your default styles here */ }`;
+//         styleSheet.insertRule(rule, styleSheet.cssRules.length);
+//     }
+// }
+
+// ... (rest of the code remains the same)

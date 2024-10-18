@@ -1,8 +1,9 @@
 body {
-    margin-top: 20px;
+    margin-top: 0%;
     color: #1a202c;
     text-align: left;
     background-color: #e2e8f0;
+    display:flex;
   }
 
   .main-body {
