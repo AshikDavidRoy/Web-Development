@@ -151,6 +151,8 @@ body {
 
 .title{
     color: rgba(133, 99, 186, 255)  ;
+    font-size: 30px;
+    font-family: 200;
 }
 .payment--card{
     background: rgb(299, 233, 233);
@@ -173,4 +175,53 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.amount--value{
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+}
+
+.detail{
+    font-size: 14px;
+    color: #77777777;
+    letter-spacing: 2px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* colors */
+
+.light-red{
+    background: rgb(241, 0, 0);
+}
+
+.light-purple{
+    background: rgb(254, 226, 254);
+}
+
+.light-green{
+    background: rgb(235, 254, 235);
+}
+
+.light-blue{
+    background: rgb(236, 236, 254);
+}
+
+.dark-red{
+    background: red;
+}
+
+.dark-purple{
+    background: purple;
+}
+
+.dark-green{
+    background: green;
+}
+
+.dark-blue{
+    background: blue;
 }
