@@ -152,3 +152,25 @@ body {
 .title{
     color: rgba(133, 99, 186, 255)  ;
 }
+.payment--card{
+    background: rgb(299, 233, 233);
+    border-radius: 10px;
+    padding: 1.3rem;
+    width: 290px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.5s ease-in-out;
+}
+
+.payment--card:hover {
+    transform: rotateY('-5px');
+}
+
+.card--header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
