@@ -75,13 +75,15 @@
         }
 
         .header img {
-            width: 150px;
+            width: 170px;
+            height: 70px;
         }
 
-        .qr-code {
+        /* .qr-code {
             margin: auto; /* Center the QR code */
-            text-align: center; /* Center the QR code */
-        }
+            /* text-align: center;  */
+            /* Center the QR code */
+        /* } */ 
 
         .main-details, .flight-details, .centered {
             display: flex;
@@ -138,9 +140,10 @@
             <button type="button" onclick="downloadImage()">Download Image</button>
             <button type="button" onclick="generateRandomData()">Generate Data</button>
         </form>
+        <!-- <img src="/Web-Development/edseek.png" alt=""> -->
     </div>
-
     <div class="ticket-container" id="ticketContainer"></div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
@@ -164,7 +167,7 @@
                 <div class="card" id="ticket">
                     <div class="card-left">
                         <header class="header">
-                            <img src="/Web-Development/10186961.jpg"/>
+                            <img src="/Web-Development/edseek.png" width: "2" height: "5">
                             <h5>BUSINESS CLASS</h5>
                         </header>
                         <main>
@@ -186,7 +189,7 @@
                     </div>
                     <div class="card-right">
                         <header class="header">
-                            <img src="/Web-Development/10186961.jpg"/>
+                            <img src="/Web-Development/edseek.png"/>
                         </header>
                         <main class="main">
                             <div class="centered">
@@ -201,9 +204,11 @@
                                 <p><span class="heading"> Flight</span><br />${flight}</p>
                                 <p><span class="heading"> Date</span><br />${date}</p>
                             </div>
+                            <div class="qr-code" id="qrCode"></div>
                         </main>
                     </div>
-                </div>`;
+                </div>
+                `;
 
             // Set ticket HTML and display
             document.getElementById("ticketContainer").innerHTML = ticketHTML;
@@ -211,7 +216,7 @@
 
             // Create QR code
             $("#qrCode").qrcode({
-                text: `Flight: ${flight}, Passenger: ${passenger}`, // Text can include more details if desired
+                text: `Flight: ${flight}, Passenger: ${passenger},Seat:${seat},From:${from},To:${to}`, // Text can include more details if desired
                 width: 70,
                 height: 70,
             });
