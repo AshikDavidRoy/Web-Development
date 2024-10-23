@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ticket Generator</title>
+<style>
+/* Basic styling for the body and container */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 20px;
+}
+
+h2 {
+  color: #4CAF50;
+  text-align: center;
+}
+
+/* Form styling */
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Table styling */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* Button styling inside table */
+table button {
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+table button:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive design */
+@media only screen and (max-width: 600px) {
+  form {
+    padding: 15px;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+  }
+
+  tr {
+    margin-bottom: 15px;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: right;
+    position: relative;
+    padding-left: 50%;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th::before, td::before {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: calc(50% - 20px);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  td:nth-of-type(1)::before { content: "ID"; }
+  td:nth-of-type(2)::before { content: "Date"; }
+  td:nth-of-type(3)::before { content: "Status"; }
+  td:nth-of-type(4)::before { content: "Priority"; }
+  td:nth-of-type(5)::before { content: "Title"; }
+  td:nth-of-type(6)::before { content: "Description"; }
+  td:nth-of-type(7)::before { content: "Assignee"; }
+  td:nth-of-type(8)::before { content: "Actions"; }
+}
+</style>
+</head>
+<body>
+<h2>Ticket Generator</h2>
+<form id="ticketForm">
+  <label for="title">Title:</label>
+  <input type="text" id="title" name="title" required><br><br>
+
+  <label for="description">Description:</label>
+  <textarea id="description" name="description" required></textarea><br><br>
+
+  <label for="assignee">Assignee:</label>
+  <input type="text" id="assignee" name="assignee"><br><br>
+
+  <label for="priority">Priority:</label>
+  <select id="priority" name="priority">
+    <option value="Low">Low</option>
+    <option value="Medium">Medium</option>
+    <option value="High">High</option>
+  </select><br><br>
+
+  <button type="button" onclick="generateTicket()">Generate Ticket</button>
+  <button type="button" onclick="downloadTicket()">Download</button>
+</form>
+
+<table id="ticketTable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Priority</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Assignee</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+<script>
+let ticketCounter = 1;
+
+function generateTicket() {
+  // Get form values
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const assignee = document.getElementById("assignee").value.trim();
+  const priority = document.getElementById("priority").value;
+
+  // Validate input
+  if (!title || !description) {
+    alert("Please fill in the required fields.");
+    return;
+  }
+
+  // Generate ticket data
+  const id = ticketCounter++;
+  const date = new Date().toLocaleDateString();
+  const status = "Open";
+
+  // Create HTML code for the new ticket
+  const newTicket = `
+    <tr>
+      <td>${id}</td>
+      <td>${date}</td>
+      <td>${status}</td>
+      <td>${priority}</td>
+      <td>${title}</td>
+      <td>${description}</td>
+      <td>${assignee}</td>
+      <td><button onclick="deleteTicket(this)">Delete</button></td>
+    </tr>`;
+
+  // Append the new ticket to the table body
+  document.querySelector("#ticketTable tbody").insertAdjacentHTML("beforeend", newTicket);
+
+  // Clear form fields
+  document.getElementById("ticketForm").reset();
+}
+
+function downloadTicket() {
+  html2canvas(document.getElementById("ticketTable")).then(function(canvas) {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    const imgWidth = 210; // A4 width in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    pdf.save("tickets.pdf");
+  });
+}
+
+function deleteTicket(button) {
+  button.parentNode.parentNode.remove();
+}
+</script>
+</body>
+</html>

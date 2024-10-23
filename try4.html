@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .ticket-container {
+            display: none;
+            margin: 20px auto;
+        }
+
+        .card {
+            display: flex;
+            background-color: #ffffff;
+            border-radius: 10px;
+            width: 500px;
+            overflow: hidden;
+            border: 5px solid black; /* Solid border for visibility */
+            position: relative; /* Position for pseudo-element */
+        }
+
+        .card-left, .card-right {
+            padding: 10px;
+        }
+
+        .card-left {
+            background-color: #ffffff;
+            width: 300px;
+            border-right: 5px solid black; /* Solid line in the middle */
+        }
+
+        .card-right {
+            width: 200px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column; /* Align QR code vertically */
+            justify-content: center; /* Center QR code vertically */
+            align-items: center; /* Center QR code horizontally */
+        }
+
+        .header img {
+            width: 150px;
+        }
+
+        .qr-code {
+            margin-top: 20px; /* Space above QR code */
+            width: 100px; /* Set width for QR code container */
+            height: 100px; /* Set height for QR code container */
+        }
+
+        .main-details, .flight-details, .centered {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .main-details p, .flight-details p {
+            margin: 0;
+            flex-basis: calc(50% - 10px);
+        }
+
+        .heading {
+            color: #ACADAF;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        /* Add a pseudo-element for the dotted line effect */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px dotted #000; /* Dotted border */
+            border-radius: 10px;
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: -1; /* Send the dotted line behind the card */
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Ticket Generator</h2>
+        <form id="ticketForm">
+            <label for="passenger">Passenger:</label>
+            <input type="text" id="passenger" name="passenger" required>
+
+            <label for="from">From:</label>
+            <input type="text" id="from" name="from" required>
+
+            <label for="to">To:</label>
+            <input type="text" id="to" name="to" required>
+
+            <label for="flight">Flight:</label>
+            <input type="text" id="flight" name="flight" required>
+
+            <label for="date">Date:</label>
+            <input type="text" id="date" name="date" required>
+
+            <label for="boarding">Boarding:</label>
+            <input type="text" id="boarding" name="boarding" required>
+
+            <label for="gate">Gate:</label>
+            <input type="text" id="gate" name="gate" required>
+
+            <label for="seat">Seat:</label>
+            <input type="text" id="seat" name="seat" required>
+
+            <button type="button" onclick="generateTicket()">Generate Ticket</button>
+            <button type="button" onclick="downloadPDF()">Download PDF</button>
+            <button type="button" onclick="downloadImage()">Download Image</button>
+            <button type="button" onclick="generateRandomData()">Generate Data</button>
+        </form>
+    </div>
+
+    <div class="ticket-container" id="ticketContainer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        async function generateTicket() {
+            var passenger = document.getElementById("passenger").value;
+            var from = document.getElementById("from").value;
+            var to = document.getElementById("to").value;
+            var flight = document.getElementById("flight").value;
+            var date = document.getElementById("date").value;
+            var boarding = document.getElementById("boarding").value;
+            var gate = document.getElementById("gate").value;
+            var seat = document.getElementById("seat").value;
+
+            if (!passenger || !from || !to || !flight || !date || !boarding || !gate || !seat) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Create ticket HTML
+            var ticketHTML = `
+                <div class="card" id="ticket">
+                    <div class="card-left">
+                        <header class="header">
+                            <img src="Web-Development/10186961.jpg"/>
+                            <h5>BUSINESS CLASS</h5>
+                        </header>
+                        <main>
+                            <section class="main-details">
+                                <p><span class="heading"> Passenger</span><br/>${passenger}</p>
+                                <p><span class="heading"> From</span><br />${from}</p>
+                                <p><span class="heading"> To</span><br />${to}</p>
+                                <p><span class="heading"> Date</span><br />${date}</p>
+                                <div class="flight-details">
+                                    <p><span class="heading"> Flight</span><br/>${flight}</p>
+                                    <p><span class="heading"> Boarding</span><br/>${boarding}</p>
+                                    <p><span class="heading"> Gate</span><br/>${gate}</p>
+                                    <p><span class="heading"> Seat</span><br/>${seat}</p>
+                                </div>
+                                <h5>Gate closes 20 mins before departure</h5>
+                            </section>
+                        </main>
+                    </div>
+                    <div class="card-right">
+                        <header class="header">
+                            <img src="Web-Development/10186961.jpg"/>
+                        </header>
+                        <main class="main">
+                            <div class="centered">
+                                <p><span class="heading"> Passenger</span><br/>${passenger}</p>
+                                <p><span class="heading"> Seat</span><br/>${seat}</p>
+                            </div>
+                            <div class="centered">
+                                <p><span class="heading"> From</span><br />${from}</p> &#8594;
+                                <p><span class="heading"> To</span><br />${to}</p>
+                            </div>
+                            <div class="centered">
+                                <p><span class="heading"> Flight</span><br />${flight}</p>
+                                <p><span class="heading"> Date</span><br />${date}</p>
+                            </div>
+                            <div class="qr-code" id="qrCodeLeft"></div> <!-- Left QR Code -->
+                        </main>
+                    </div>
+                </div>`;
+
+            // Set ticket HTML to container
+            var ticketContainer = document.getElementById("ticketContainer");
+            ticketContainer.innerHTML = ticketHTML;
+            ticketContainer.style.display = "block";
+
+            // Generate QR codes
+            // $('#qrCodeLeft').qrcode({ width: 100, height: 100, text: `${passenger}, ${flight}, ${from} to ${to}` });
+            $('#qrCodeRight').qrcode({ width: 100, height: 100, text: `${passenger}, ${flight}, ${from} to ${to}` });
+        }
+
+        function downloadPDF() {
+            var ticket = document.getElementById("ticket");
+            var pdf = new jsPDF('p', 'pt', 'a4');
+            pdf.html(ticket, {
+                callback: function (pdf) {
+                    pdf.save('ticket.pdf');
+                },
+                x: 10,
+                y: 10
+            });
+        }
+
+        function downloadImage() {
+            var ticket = document.getElementById("ticket");
+            html2canvas(ticket, { backgroundColor: null }).then(function (canvas) {
+                var link = document.createElement('a');
+                link.download = 'ticket.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        function generateRandomData() {
+            document.getElementById("passenger").value = "John Doe";
+            document.getElementById("from").value = "New York";
+            document.getElementById("to").value = "Los Angeles";
+            document.getElementById("flight").value = "NY123";
+            document.getElementById("date").value = "2024-10-30";
+            document.getElementById("boarding").value = "12:30";
+            document.getElementById("gate").value = "A3";
+            document.getElementById("seat").value = "12B";
+        }
+    </script>
+</body>
+</html>

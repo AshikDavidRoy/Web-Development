@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ticket Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 20px;
+      max-width: 600px;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .ticket-container {
+      display: none;
+    }
+
+    .card {
+      display: flex;
+      background-color: #ffffff;
+      border-radius: 10px;
+      width: 650px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      margin: 20px auto;
+    }
+
+    .card-left, .card-right {
+      padding: 20px;
+    }
+
+    .card-left {
+      background-color: #ffffff;
+      width: 450px;
+      border-right: 1px dashed #ccc;
+    }
+
+    .card-right {
+      width: 200px;
+      background-color: #ffffff;
+    }
+
+    .header img {
+      width: 150px;
+    }
+
+    .main-details, .flight-details, .centered {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+    }
+
+    .heading {
+      color: #ACADAF;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Ticket Generator</h2>
+    <form id="ticketForm">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required>
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required></textarea>
+
+      <label for="assignee">Assignee:</label>
+      <input type="text" id="assignee" name="assignee">
+
+      <label for="priority">Priority:</label>
+      <select id="priority" name="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+
+      <button type="button" onclick="generateTicket()">Generate Ticket</button>
+      <button type="button" onclick="downloadTicket()">Download</button>
+    </form>
+  </div>
+
+  <div class="ticket-container" id="ticketContainer"></div>
+
+  <script>
+    function generateTicket() {
+      var title = document.getElementById("title").value;
+      var description = document.getElementById("description").value;
+      var assignee = document.getElementById("assignee").value;
+      var priority = document.getElementById("priority").value;
+
+      if (!title || !description) {
+        alert("Please fill in the required fields.");
+        return;
+      }
+
+      var ticketHTML = `
+        <div class="card" id="ticket">
+          <div class="card-left">
+            <header class="header">
+              <img src="https://logodownload.org/wp-content/uploads/2019/05/air-france-logo-1.png"/>
+              <h5>${priority} Priority</h5>
+            </header>
+            <main>
+              <div class="main-details">
+                <p><span class="heading">Title:</span><br>${title}</p>
+                <p><span class="heading">Assignee:</span><br>${assignee || "Unassigned"}</p>
+              </div>
+              <div class="flight-details">
+                <p><span class="heading">Description:</span><br>${description}</p>
+              </div>
+            </main>
+          </div>
+          <div class="card-right">
+            <header class="header">
+              <img src="https://logodownload.org/wp-content/uploads/2019/05/air-france-logo-1.png"/>
+            </header>
+            <main>
+              <p><span class="heading">Generated Ticket</span></p>
+            </main>
+          </div>
+        </div>`;
+
+      document.getElementById("ticketContainer").innerHTML = ticketHTML;
+      document.getElementById("ticketContainer").style.display = "block";
+    }
+
+    function downloadTicket() {
+      var ticket = document.getElementById("ticket");
+      html2canvas(ticket, {backgroundColor: null}).then(canvas => {
+        var imgData = canvas.toDataURL('image/png');
+        var pdf = new jsPDF('p', 'mm', 'a4');
+        var imgWidth = 210;
+        var pageHeight = 297;
+        var imgHeight = canvas.height * imgWidth / canvas.width;
+        var position = 10;
+        
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.save('ticket.pdf');
+      });
+    }
+  </script>
+</body>
+</html>
