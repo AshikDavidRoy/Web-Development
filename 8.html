@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Ticket Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            border: 2px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Custom Ticket Generator</h1>
+        
+        <form id="ticketForm">
+            <label for="dataInput">Enter Data for Barcode:</label>
+            <input type="text" id="dataInput" placeholder="Enter your data here..." required>
+            <button type="button" id="generateData">Generate Data</button>
+        </form>
+        
+        <svg id="barcode" style="margin-top: 20px;"></svg>
+        
+        <button id="download" style="margin-top: 20px;">Download Ticket</button>
+    </div>
+
+    <script>
+        document.getElementById("generateData").addEventListener("click", function() {
+            const dataInput = document.getElementById("dataInput").value;
+            
+            if (dataInput) {
+                // Generate Barcode
+                JsBarcode("#barcode", dataInput, {
+                    format: "CODE128",
+                    width: 4,
+                    height: 40,
+                    displayValue: true
+                });
+            } else {
+                alert("Please enter data for the barcode.");
+            }
+        });
+
+        document.getElementById("download").addEventListener("click", function() {
+            // Create a canvas to save the barcode as an image
+            const barcodeSVG = document.getElementById("barcode").outerHTML;
+            const canvas = document.createElement("canvas");
+            const img = new Image();
+            const svgBlob = new Blob([barcodeSVG], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                
+                // Download the image
+                const link = document.createElement("a");
+                link.download = "barcode.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                // Clean up
+                URL.revokeObjectURL(url);
+            };
+            
+            img.src = url;
+        });
+    </script>
+</body>
+</html>

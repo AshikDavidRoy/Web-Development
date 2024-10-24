@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background: linear-gradient(0deg, rgba(135, 206, 235, 0.5), rgba(255, 0, 150, 0.3)), url("https://images.unsplash.com/photo-1606768666853-403c90a981ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1742&q=80");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            display: flex;
+            width: 650px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .card-left {
+            width: 450px;
+            padding: 20px 0 20px 40px;
+        }
+
+        .card-left main {
+            display: flex;
+        }
+
+        .card-left .barcode {
+            margin-top: 50px;
+            margin-left: -50px;
+        }
+
+        .card-left .barcode img {
+            height: 50px;
+            width: 150px;
+            transform: rotate(90deg);
+        }
+
+        .card-left section {
+            width: 100%;
+            margin: 0 10px 0 -20px;
+        }
+
+        .card-left .flight-details {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .card-right {
+            width: 200px;
+            background-color: #ffffff;
+            border-left: 1px dashed #ccc;
+            padding: 20px 15px 0 10px;
+        }
+
+        .card-right h5 {
+            text-align: center;
+        }
+
+        .header {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header img {
+            width: 150px;
+        }
+
+        .header h5 {
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+        main {
+            padding: 10px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .heading {
+            font-size: 12px;
+            color: #ACADAF;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        .centered {
+            display: flex;
+            align-items: center;
+        }
+
+        .centered p {
+            padding: 0 10px;
+        }
+
+        .centered p:first-child {
+            padding-left: 0;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <form id="ticket-form">
+        <input type="text" id="passenger-name" placeholder="Passenger Name">
+        <input type="text" id="flight-number" placeholder="Flight Number">
+        <input type="text" id="seat-number" placeholder="Seat Number">
+        <button type="button" onclick="generateData()">Generate Data</button>
+        <button type="button" onclick="generateTicket()">Generate Ticket</button>
+    </form>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <div id="ticket-content">
+            <!-- The generated ticket will be inserted here -->
+        </div>
+        <div class="popup-buttons">
+            <button onclick="downloadPDF()">Download PDF</button>
+            <button onclick="downloadImage()">Download Image</button>
+        </div>
+    </div>
+
+    <script>
+        function generateData() {
+            // Function to generate data for the ticket
+            alert("Data Generated");
+        }
+
+        function generateTicket() {
+            // Get form inputs
+            const passengerName = document.getElementById("passenger-name").value;
+            const flightNumber = document.getElementById("flight-number").value;
+            const seatNumber = document.getElementById("seat-number").value;
+            
+            // Generate QR code (assuming some QR code generation logic exists)
+            const qrCodeDataUrl = "https://via.placeholder.com/150"; // Replace with your generated QR code data URL
+
+            // Create the ticket content
+            const ticketHTML = `
+                <div class="card">
+                  <div class="card-left">
+                    <header class="header">
+                      <img src="https://logodownload.org/wp-content/uploads/2019/05/air-france-logo-1.png"/>
+                      <h5>BUSINESS CLASS</h5>
+                    </header>
+                    <main>
+                      <div class="barcode">
+                        <img src="${qrCodeDataUrl}" />
+                      </div>
+                      <section class="main-details">
+                        <p><span class="heading"> Passenger</span><br/>${passengerName}</p>
+                        <div class="centered">
+                          <p><span class="heading"> From</span><br />YVR </p> &#8594;
+                           <p><span class="heading"> To</span><br /> CDG</p>
+                          <p><span class="heading"> Date</span><br /> 08AUG2022</p>
+                        </div>       
+                        <div class="flight-details">
+                           <p><span class="heading"> Flight</span><br/>${flightNumber}</p> 
+                          <p><span class="heading"> Boarding</span><br/>10:00</p>
+                          <p><span class="heading"> Gate</span><br/>G04</p>
+                          <p><span class="heading"> Seat</span><br/>${seatNumber}</p>
+                        </div>
+                        <h5>Gate closes 20 mins before depature</h5>
+                      </section>
+                    </main>
+                  </div>
+                  <div class="card-right">
+                    <header class="header">
+                      <img src="https://logodownload.org/wp-content/uploads/2019/05/air-france-logo-1.png"/>
+                    </header>
+                    <main class="main">
+                      <div class="centered">
+                        <p><span class="heading"> Passenger</span><br/>${passengerName}</p>
+                        <p><span class="heading"> Seat</span><br/>${seatNumber}</p>
+                      </div>
+                      <div class="centered">
+                          <p><span class="heading"> From</span><br />Canada </p> &#8594;
+                           <p><span class="heading"> To</span><br /> Paris</p>
+                        </div> 
+                      <div class="centered">
+                        <p><span class="heading"> Flight</span><br />${flightNumber} </p> 
+                           <p><span class="heading"> Date</span><br /> 08AUG2022</p>
+                      </div>
+                    </main>
+                  </div>
+                </div>
+            `;
+
+            document.getElementById("ticket-content").innerHTML = ticketHTML;
+            showPopup();
+        }
+
+        function showPopup() {
+            document.getElementById("popup").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function downloadPDF() {
+            // PDF download logic here
+            alert("PDF Downloaded");
+        }
+
+        function downloadImage() {
+            // Image download logic here
+            alert("Image Downloaded");
+        }
+    </script>
+</body>
+</html>
